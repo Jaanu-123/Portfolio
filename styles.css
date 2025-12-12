@@ -1,0 +1,518 @@
+:root {
+    --bg-color: #0a0a0a;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0a0;
+    --accent-color: #ff007f;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Outfit', sans-serif;
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.section-title {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 20%;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+}
+
+/* Hero Section */
+.hero-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    text-align: center;
+    z-index: 10;
+    opacity: 0;
+    animation: fadeUp 1.2s ease-out forwards;
+}
+
+.logo-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(255, 0, 127, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-title {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+}
+
+.highlight {
+    color: var(--accent-color);
+    text-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    font-weight: 300;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 3rem;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: var(--transition);
+    border-radius: 50px;
+}
+
+.cta-button:hover {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
+    transform: translateY(-3px);
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.7;
+    animation: bounce 2s infinite;
+}
+
+.mouse {
+    width: 30px;
+    height: 50px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 15px;
+    position: relative;
+}
+
+.mouse::before {
+    content: '';
+    width: 4px;
+    height: 8px;
+    background: var(--text-secondary);
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+/* Gallery Section */
+.gallery-section {
+    padding: 5rem 2rem;
+    background-color: var(--bg-color);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: var(--transition);
+    background: var(--card-bg);
+    aspect-ratio: 3/4;
+    /* Consistent aspect ratio mainly for display */
+}
+
+/* For masonry effect with variable height, we'd traditionally use columns or JS.
+   For simplicity and reliability in CSS Grid, we use object-fit cover to maintain structure or flex-masonry.
+   To honor the art's dimensions and provide a true masonry feel, we'll let img control height slightly in a different layout,
+   but aspect-ratio is safer for a clean grid.
+   However, let's try a pure CSS column approach for true masonry if items have different ratios.
+*/
+.gallery-grid {
+    /* Switching to column layout for true simple masonry */
+    display: block;
+    column-count: 3;
+    column-gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .gallery-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 600px) {
+    .gallery-grid {
+        column-count: 1;
+    }
+}
+
+.gallery-item {
+    display: inline-block;
+    /* Essential for column-count */
+    width: 100%;
+    margin-bottom: 2rem;
+    break-inside: avoid;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease-out forwards;
+    animation-play-state: paused;
+    /* Controlled by JS */
+}
+
+.gallery-item.visible {
+    animation-play-state: running;
+}
+
+.gallery-item img {
+    width: 100%;
+    display: block;
+    transition: var(--transition);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item:hover .overlay {
+    opacity: 1;
+}
+
+.overlay h3 {
+    font-size: 1.5rem;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.overlay p {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    transform: translateY(20px);
+    transition: var(--transition);
+    transition-delay: 0.1s;
+}
+
+.gallery-item:hover .overlay h3,
+.gallery-item:hover .overlay p {
+    transform: translateY(0);
+}
+
+/* Video Play Icon */
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    z-index: 5;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: var(--transition);
+}
+
+.gallery-item:hover .play-icon {
+    transform: translate(-50%, -50%) scale(1.2);
+    color: var(--accent-color);
+}
+
+/* About Section */
+.about-section {
+    padding: 6rem 2rem;
+    background: linear-gradient(180deg, var(--bg-color) 0%, #111 100%);
+    text-align: center;
+}
+
+.about-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    margin-bottom: 3rem;
+}
+
+.artist-name {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.artist-tagline {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 300;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.bio-text {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 4rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+}
+
+.bio-text strong {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    text-align: left;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+.column-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--accent-color);
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.highlights-list {
+    list-style: none;
+}
+
+.highlights-list li {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    position: relative;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.highlights-list li::before {
+    display: none;
+    /* Removing the old bullet */
+}
+
+.highlights-list li:hover {
+    background: linear-gradient(90deg, rgba(255, 0, 127, 0.1), transparent);
+    border-left: 3px solid var(--accent-color);
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+}
+
+.highlights-list li strong {
+    color: var(--accent-color);
+    /* Highlight the title part */
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.highlights-list li:hover strong {
+    text-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+}
+
+.skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.skill-tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.skill-tag:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.social-links-container {
+    margin-top: 2rem;
+    text-align: center;
+    /* Center button in portable devices or just generally */
+}
+
+@media (min-width: 769px) {
+    .social-links-container {
+        text-align: left;
+    }
+}
+
+/* Footer */
+footer {
+    padding: 6rem 2rem;
+    text-align: center;
+    background-color: #050505;
+    border-top: 1px solid rgba(255, 0, 127, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    box-shadow: 0 0 20px var(--accent-color);
+}
+
+.footer-caption {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #fff, var(--accent-color), #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    animation: shine 5s linear infinite;
+}
+
+.copyright {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-top: 2rem;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Animations */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
